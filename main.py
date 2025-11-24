@@ -1,13 +1,12 @@
-# main.py
 import os
 import sys
 from datetime import date
 
-# Sicherstellen, dass der Projektordner auf dem Python-Pfad ist
+# Projektordner auf den Python-Pfad setzen
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, CURRENT_DIR)
 
-from utils.picks import load_picks, save_pick, already_picked
+from utils.picks import load_picks, save_pick, already_picked, has_pick_on_date
 from utils.nba_api import get_today_games
 
 
@@ -19,7 +18,9 @@ def show_menu():
     print("4. Beenden")
 
 
-def show_today_games(games):
+def show_today_games():
+    games = get_today_games()
+
     print("=== Heutige Spiele ===")
     if not games:
         print("Keine Spiele heute (oder API-Problem).")
@@ -29,8 +30,59 @@ def show_today_games(games):
         print(f"{i}. {g['visitor']} @ {g['home']}")
 
 
+def pick_team_for_today():
+    """Einen Pick für den heutigen Tag machen."""
+    # Picks laden (falls sich extern was geändert hat)
+    load_picks()
+
+    today_str = date.today().isoformat()
+
+    if has_pick_on_date(today_str):
+        print(f"✖ Du hast für heute ({today_str}) bereits ein Team getippt.")
+        return
+
+    games = get_today_games()
+    if not games:
+        print("Heute gibt es keine Spiele (oder API-Problem).")
+        return
+
+    # Alle Teams, die heute spielen
+    teams_today = sorted({g["home"] for g in games} | {g["visitor"] for g in games})
+
+    print("=== Teams, die heute spielen ===")
+    for i, t in enumerate(teams_today, start=1):
+        print(f"{i}. {t}")
+
+    auswahl = input("Nummer oder Teamname eingeben: ").strip()
+
+    team = None
+
+    # Nutzer gibt eine Zahl ein
+    if auswahl.isdigit():
+        idx = int(auswahl)
+        if 1 <= idx <= len(teams_today):
+            team = teams_today[idx - 1]
+        else:
+            print("✖ Ungültige Nummer.")
+            return
+    else:
+        # Nutzer gibt einen Teamnamen ein
+        matches = [t for t in teams_today if t.lower() == auswahl.lower()]
+        if not matches:
+            print(f"✖ '{auswahl}' spielt heute nicht.")
+            return
+        team = matches[0]
+
+    if already_picked(team):
+        print(f"✖ Team '{team}' wurde bereits an einem anderen Tag getippt!")
+        return
+
+    save_pick(team, today_str)
+    print(f"✔ Pick gespeichert: {today_str} – {team}")
+
+
 def main():
-    # vorhandene Picks laden
+    # Bestehende Picks einmal initial laden
     load_picks()
 
     while True:
@@ -38,51 +90,16 @@ def main():
         choice = input("Auswahl: ").strip()
 
         if choice == "1":
-            games = get_today_games()
-            # Feldnamen anpassen für die Ausgabe
-            games_pretty = [
-                {"home": g["home"], "visitor": g["visitor"]} for g in games
-            ]
-            show_today_games(
-                [{"home": g["home"], "visitor": g["visitor"]} for g in games]
-            )
+            show_today_games()
 
         elif choice == "2":
-            games = get_today_games()
-
-            if not games:
-                print("Heute gibt es keine Spiele (oder API-Problem).")
-                continue
-
-            # Alle Teams, die heute spielen
-            teams_today = set()
-            for g in games:
-                teams_today.add(g["home"])
-                teams_today.add(g["visitor"])
-
-            print("Teams, die heute spielen:")
-            for t in sorted(teams_today):
-                print(" -", t)
-
-            team = input("Welches Team tippst du heute? ").strip()
-
-            if team not in teams_today:
-                print(f"✖ '{team}' spielt heute nicht.")
-                continue
-
-            if already_picked(team):
-                print(f"✖ Team '{team}' wurde bereits an einem anderen Tag getippt!")
-                continue
-
-            today_str = date.today().isoformat()
-            save_pick(team, today_str)
-            print(f"✔ Pick gespeichert: {today_str} – {team}")
+            pick_team_for_today()
 
         elif choice == "3":
             load_picks(show=True)
 
         elif choice == "4":
-            print("Bye!")
+            print("Bye! 🏀")
             break
 
         else:

@@ -1,1 +1,77 @@
-[]
+[
+  {
+    "date": "2025-11-23",
+    "team": "Toronto Raptors",
+    "run": 1
+  },
+  {
+    "date": "2025-11-24",
+    "team": "New York Knicks",
+    "run": 1
+  },
+  {
+    "date": "2025-11-25",
+    "team": "Atlanta Hawks",
+    "run": 1
+  },
+  {
+    "date": "2025-11-26",
+    "team": "Memphis Grizzlies",
+    "run": 1
+  },
+  {
+    "date": "2025-11-28",
+    "team": "Indiana Pacers",
+    "run": 1
+  },
+  {
+    "date": "2025-11-29",
+    "team": "Milwaukee Bucks",
+    "run": 1
+  },
+  {
+    "date": "2025-11-30",
+    "team": "Los Angeles Lakers",
+    "run": 1
+  },
+  {
+    "date": "2025-12-01",
+    "team": "Denver Nuggets",
+    "run": 1
+  },
+  {
+    "date": "2025-12-02",
+    "team": "Philadelphia 76ers",
+    "run": 1
+  },
+  {
+    "date": "2025-12-03",
+    "team": "Houston Rockets",
+    "run": 1
+  },
+  {
+    "date": "2025-12-04",
+    "team": "Boston Celtics",
+    "run": 1
+  },
+  {
+    "date": "2025-12-05",
+    "team": "Oklahoma City Thunder",
+    "run": 1
+  },
+  {
+    "date": "2025-12-06",
+    "team": "Brooklyn Nets",
+    "run": 1
+  },
+  {
+    "date": "2025-12-07",
+    "team": "Golden State Warriors",
+    "run": 1
+  },
+  {
+    "date": "2025-12-08",
+    "team": "San Antonio Spurs",
+    "run": 1
+  }
+]

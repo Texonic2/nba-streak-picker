@@ -1,0 +1,498 @@
+{
+  "2025-11-24": [
+    {
+      "home": "Indiana Pacers",
+      "visitor": "Detroit Pistons"
+    },
+    {
+      "home": "Toronto Raptors",
+      "visitor": "Cleveland Cavaliers"
+    },
+    {
+      "home": "Brooklyn Nets",
+      "visitor": "New York Knicks"
+    },
+    {
+      "home": "Miami Heat",
+      "visitor": "Dallas Mavericks"
+    },
+    {
+      "home": "Memphis Grizzlies",
+      "visitor": "Denver Nuggets"
+    },
+    {
+      "home": "Milwaukee Bucks",
+      "visitor": "Portland Trail Blazers"
+    },
+    {
+      "home": "New Orleans Pelicans",
+      "visitor": "Chicago Bulls"
+    },
+    {
+      "home": "Phoenix Suns",
+      "visitor": "Houston Rockets"
+    },
+    {
+      "home": "Golden State Warriors",
+      "visitor": "Utah Jazz"
+    },
+    {
+      "home": "Sacramento Kings",
+      "visitor": "Minnesota Timberwolves"
+    }
+  ],
+  "2025-11-25": [
+    {
+      "home": "Washington Wizards",
+      "visitor": "Atlanta Hawks"
+    },
+    {
+      "home": "Philadelphia 76ers",
+      "visitor": "Orlando Magic"
+    },
+    {
+      "home": "Los Angeles Lakers",
+      "visitor": "LA Clippers"
+    }
+  ],
+  "2025-11-26": [
+    {
+      "home": "Boston Celtics",
+      "visitor": "Detroit Pistons"
+    },
+    {
+      "home": "Charlotte Hornets",
+      "visitor": "New York Knicks"
+    },
+    {
+      "home": "Miami Heat",
+      "visitor": "Milwaukee Bucks"
+    },
+    {
+      "home": "Toronto Raptors",
+      "visitor": "Indiana Pacers"
+    },
+    {
+      "home": "Oklahoma City Thunder",
+      "visitor": "Minnesota Timberwolves"
+    },
+    {
+      "home": "New Orleans Pelicans",
+      "visitor": "Memphis Grizzlies"
+    },
+    {
+      "home": "Golden State Warriors",
+      "visitor": "Houston Rockets"
+    },
+    {
+      "home": "Portland Trail Blazers",
+      "visitor": "San Antonio Spurs"
+    },
+    {
+      "home": "Sacramento Kings",
+      "visitor": "Phoenix Suns"
+    }
+  ],
+  "2025-11-23": [
+    {
+      "home": "Philadelphia 76ers",
+      "visitor": "Miami Heat"
+    },
+    {
+      "home": "Atlanta Hawks",
+      "visitor": "Charlotte Hornets"
+    },
+    {
+      "home": "Boston Celtics",
+      "visitor": "Orlando Magic"
+    },
+    {
+      "home": "Cleveland Cavaliers",
+      "visitor": "LA Clippers"
+    },
+    {
+      "home": "Toronto Raptors",
+      "visitor": "Brooklyn Nets"
+    },
+    {
+      "home": "Oklahoma City Thunder",
+      "visitor": "Portland Trail Blazers"
+    },
+    {
+      "home": "Phoenix Suns",
+      "visitor": "San Antonio Spurs"
+    },
+    {
+      "home": "Utah Jazz",
+      "visitor": "Los Angeles Lakers"
+    }
+  ],
+  "2025-11-27": [],
+  "2025-11-28": [
+    {
+      "home": "Atlanta Hawks",
+      "visitor": "Cleveland Cavaliers"
+    },
+    {
+      "home": "Brooklyn Nets",
+      "visitor": "Philadelphia 76ers"
+    },
+    {
+      "home": "Charlotte Hornets",
+      "visitor": "Chicago Bulls"
+    },
+    {
+      "home": "Detroit Pistons",
+      "visitor": "Orlando Magic"
+    },
+    {
+      "home": "Indiana Pacers",
+      "visitor": "Washington Wizards"
+    },
+    {
+      "home": "New York Knicks",
+      "visitor": "Milwaukee Bucks"
+    },
+    {
+      "home": "Oklahoma City Thunder",
+      "visitor": "Phoenix Suns"
+    },
+    {
+      "home": "Denver Nuggets",
+      "visitor": "San Antonio Spurs"
+    },
+    {
+      "home": "Utah Jazz",
+      "visitor": "Sacramento Kings"
+    },
+    {
+      "home": "Los Angeles Lakers",
+      "visitor": "Dallas Mavericks"
+    },
+    {
+      "home": "LA Clippers",
+      "visitor": "Memphis Grizzlies"
+    }
+  ],
+  "2025-11-29": [
+    {
+      "home": "Minnesota Timberwolves",
+      "visitor": "Boston Celtics"
+    },
+    {
+      "home": "Charlotte Hornets",
+      "visitor": "Toronto Raptors"
+    },
+    {
+      "home": "Indiana Pacers",
+      "visitor": "Chicago Bulls"
+    },
+    {
+      "home": "Miami Heat",
+      "visitor": "Detroit Pistons"
+    },
+    {
+      "home": "Milwaukee Bucks",
+      "visitor": "Brooklyn Nets"
+    },
+    {
+      "home": "Golden State Warriors",
+      "visitor": "New Orleans Pelicans"
+    },
+    {
+      "home": "Phoenix Suns",
+      "visitor": "Denver Nuggets"
+    },
+    {
+      "home": "LA Clippers",
+      "visitor": "Dallas Mavericks"
+    }
+  ],
+  "2025-11-30": [
+    {
+      "home": "Utah Jazz",
+      "visitor": "Houston Rockets"
+    },
+    {
+      "home": "Cleveland Cavaliers",
+      "visitor": "Boston Celtics"
+    },
+    {
+      "home": "New York Knicks",
+      "visitor": "Toronto Raptors"
+    },
+    {
+      "home": "Philadelphia 76ers",
+      "visitor": "Atlanta Hawks"
+    },
+    {
+      "home": "Portland Trail Blazers",
+      "visitor": "Oklahoma City Thunder"
+    },
+    {
+      "home": "Minnesota Timberwolves",
+      "visitor": "San Antonio Spurs"
+    },
+    {
+      "home": "Sacramento Kings",
+      "visitor": "Memphis Grizzlies"
+    },
+    {
+      "home": "Los Angeles Lakers",
+      "visitor": "New Orleans Pelicans"
+    }
+  ],
+  "2025-12-01": [
+    {
+      "home": "Detroit Pistons",
+      "visitor": "Atlanta Hawks"
+    },
+    {
+      "home": "Indiana Pacers",
+      "visitor": "Cleveland Cavaliers"
+    },
+    {
+      "home": "Washington Wizards",
+      "visitor": "Milwaukee Bucks"
+    },
+    {
+      "home": "Brooklyn Nets",
+      "visitor": "Charlotte Hornets"
+    },
+    {
+      "home": "Miami Heat",
+      "visitor": "LA Clippers"
+    },
+    {
+      "home": "Orlando Magic",
+      "visitor": "Chicago Bulls"
+    },
+    {
+      "home": "Denver Nuggets",
+      "visitor": "Dallas Mavericks"
+    },
+    {
+      "home": "Utah Jazz",
+      "visitor": "Houston Rockets"
+    },
+    {
+      "home": "Los Angeles Lakers",
+      "visitor": "Phoenix Suns"
+    }
+  ],
+  "2025-12-02": [
+    {
+      "home": "Philadelphia 76ers",
+      "visitor": "Washington Wizards"
+    },
+    {
+      "home": "Toronto Raptors",
+      "visitor": "Portland Trail Blazers"
+    },
+    {
+      "home": "Boston Celtics",
+      "visitor": "New York Knicks"
+    },
+    {
+      "home": "New Orleans Pelicans",
+      "visitor": "Minnesota Timberwolves"
+    },
+    {
+      "home": "San Antonio Spurs",
+      "visitor": "Memphis Grizzlies"
+    },
+    {
+      "home": "Golden State Warriors",
+      "visitor": "Oklahoma City Thunder"
+    }
+  ],
+  "2025-12-03": [
+    {
+      "home": "Cleveland Cavaliers",
+      "visitor": "Portland Trail Blazers"
+    },
+    {
+      "home": "Indiana Pacers",
+      "visitor": "Denver Nuggets"
+    },
+    {
+      "home": "Orlando Magic",
+      "visitor": "San Antonio Spurs"
+    },
+    {
+      "home": "Atlanta Hawks",
+      "visitor": "LA Clippers"
+    },
+    {
+      "home": "New York Knicks",
+      "visitor": "Charlotte Hornets"
+    },
+    {
+      "home": "Chicago Bulls",
+      "visitor": "Brooklyn Nets"
+    },
+    {
+      "home": "Houston Rockets",
+      "visitor": "Sacramento Kings"
+    },
+    {
+      "home": "Milwaukee Bucks",
+      "visitor": "Detroit Pistons"
+    },
+    {
+      "home": "Dallas Mavericks",
+      "visitor": "Miami Heat"
+    }
+  ],
+  "2025-12-04": [
+    {
+      "home": "Philadelphia 76ers",
+      "visitor": "Golden State Warriors"
+    },
+    {
+      "home": "Washington Wizards",
+      "visitor": "Boston Celtics"
+    },
+    {
+      "home": "Brooklyn Nets",
+      "visitor": "Utah Jazz"
+    },
+    {
+      "home": "Toronto Raptors",
+      "visitor": "Los Angeles Lakers"
+    },
+    {
+      "home": "New Orleans Pelicans",
+      "visitor": "Minnesota Timberwolves"
+    }
+  ],
+  "2025-12-05": [
+    {
+      "home": "Boston Celtics",
+      "visitor": "Los Angeles Lakers"
+    },
+    {
+      "home": "Orlando Magic",
+      "visitor": "Miami Heat"
+    },
+    {
+      "home": "Atlanta Hawks",
+      "visitor": "Denver Nuggets"
+    },
+    {
+      "home": "Cleveland Cavaliers",
+      "visitor": "San Antonio Spurs"
+    },
+    {
+      "home": "Detroit Pistons",
+      "visitor": "Portland Trail Blazers"
+    },
+    {
+      "home": "New York Knicks",
+      "visitor": "Utah Jazz"
+    },
+    {
+      "home": "Toronto Raptors",
+      "visitor": "Charlotte Hornets"
+    },
+    {
+      "home": "Chicago Bulls",
+      "visitor": "Indiana Pacers"
+    },
+    {
+      "home": "Houston Rockets",
+      "visitor": "Phoenix Suns"
+    },
+    {
+      "home": "Memphis Grizzlies",
+      "visitor": "LA Clippers"
+    },
+    {
+      "home": "Milwaukee Bucks",
+      "visitor": "Philadelphia 76ers"
+    },
+    {
+      "home": "Oklahoma City Thunder",
+      "visitor": "Dallas Mavericks"
+    }
+  ],
+  "2025-12-06": [
+    {
+      "home": "Brooklyn Nets",
+      "visitor": "New Orleans Pelicans"
+    },
+    {
+      "home": "Washington Wizards",
+      "visitor": "Atlanta Hawks"
+    },
+    {
+      "home": "Cleveland Cavaliers",
+      "visitor": "Golden State Warriors"
+    },
+    {
+      "home": "Detroit Pistons",
+      "visitor": "Milwaukee Bucks"
+    },
+    {
+      "home": "Miami Heat",
+      "visitor": "Sacramento Kings"
+    },
+    {
+      "home": "Minnesota Timberwolves",
+      "visitor": "LA Clippers"
+    },
+    {
+      "home": "Dallas Mavericks",
+      "visitor": "Houston Rockets"
+    }
+  ],
+  "2025-12-07": [
+    {
+      "home": "New York Knicks",
+      "visitor": "Orlando Magic"
+    },
+    {
+      "home": "Toronto Raptors",
+      "visitor": "Boston Celtics"
+    },
+    {
+      "home": "Charlotte Hornets",
+      "visitor": "Denver Nuggets"
+    },
+    {
+      "home": "Memphis Grizzlies",
+      "visitor": "Portland Trail Blazers"
+    },
+    {
+      "home": "Chicago Bulls",
+      "visitor": "Golden State Warriors"
+    },
+    {
+      "home": "Philadelphia 76ers",
+      "visitor": "Los Angeles Lakers"
+    },
+    {
+      "home": "Utah Jazz",
+      "visitor": "Oklahoma City Thunder"
+    }
+  ],
+  "2025-12-08": [
+    {
+      "home": "Indiana Pacers",
+      "visitor": "Sacramento Kings"
+    },
+    {
+      "home": "Minnesota Timberwolves",
+      "visitor": "Phoenix Suns"
+    },
+    {
+      "home": "New Orleans Pelicans",
+      "visitor": "San Antonio Spurs"
+    }
+  ],
+  "2025-12-09": [],
+  "2025-12-10": [],
+  "2025-12-11": [],
+  "2025-12-12": [],
+  "2025-12-13": []
+}
