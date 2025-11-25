@@ -1,6 +1,7 @@
 from datetime import date, timedelta
 import os
 import sys
+import calendar
 
 from flask import Flask, render_template, request, redirect, url_for
 
@@ -21,7 +22,7 @@ from utils.picks import (
 from utils.nba_api import get_games_for_date
 
 app = Flask(__name__)
-app.secret_key = "dev-secret-key"
+app.secret_key = "d6d8cded-3a7a-4aae-8675-b8ad9f873320"
 
 # Logo-Mapping für Teams
 TEAM_LOGOS = {
@@ -87,51 +88,12 @@ def index():
 
     current_day = _get_current_day_from_request()
     current_day_str = current_day.isoformat()
-
-    # Spiele für den Tag
-    games = get_games_for_date(current_day)
-
-    # Teams des Tages für Validierung
-    if games:
-        teams_today = sorted(
-            {g["home"] for g in games} | {g["visitor"] for g in games}
-        )
-    else:
-        teams_today = []
-
-    # Matchups + Pick-Info in einem Objekt pro Spiel
-    game_cards = []
-    for g in games:
-        visitor_name = g["visitor"]
-        home_name = g["home"]
-
-        game_cards.append(
-            {
-                "visitor": {
-                    "name": visitor_name,
-                    "logo": TEAM_LOGOS.get(visitor_name),
-                    "picked": already_picked(visitor_name, current_run),
-                },
-                "home": {
-                    "name": home_name,
-                    "logo": TEAM_LOGOS.get(home_name),
-                    "picked": already_picked(home_name, current_run),
-                },
-            }
-        )
-
-    # Kalender: +/- 1 Tag
-    prev_day = current_day - timedelta(days=1)
-    next_day = current_day + timedelta(days=1)
-    prev_day_str = prev_day.isoformat()
-    next_day_str = next_day.isoformat()
-
-    picks_for_run = get_picks_for_run(current_run)
+    today = date.today()
 
     message = None
     error = None
 
-    # Pick-Form (kommt von Buttons bei den Logos)
+    # === POST: Team aus Matchup picken ===
     if request.method == "POST":
         team = request.form.get("team", "").strip()
         form_run = request.form.get("run", type=int)
@@ -146,11 +108,11 @@ def index():
             except ValueError:
                 pass
 
-        # Tages-Spiele für Validierung nachladen
-        games = get_games_for_date(current_day)
-        if games:
+        # Spiele für das Formular-Datum holen
+        games_for_form = get_games_for_date(current_day)
+        if games_for_form:
             teams_today = sorted(
-                {g["home"] for g in games} | {g["visitor"] for g in games}
+                {g["home"] for g in games_for_form} | {g["visitor"] for g in games_for_form}
             )
         else:
             teams_today = []
@@ -180,7 +142,104 @@ def index():
                 )
             )
 
+    # === Spiele & Matchup-Karten für aktuellen Tag ===
+    games = get_games_for_date(current_day)
+
+    if games:
+        teams_today = sorted(
+            {g["home"] for g in games} | {g["visitor"] for g in games}
+        )
+    else:
+        teams_today = []
+
+    game_cards = []
+    for g in games:
+        visitor_name = g["visitor"]
+        home_name = g["home"]
+
+        game_cards.append(
+            {
+                "visitor": {
+                    "name": visitor_name,
+                    "logo": TEAM_LOGOS.get(visitor_name),
+                    "picked": already_picked(visitor_name, current_run),
+                },
+                "home": {
+                    "name": home_name,
+                    "logo": TEAM_LOGOS.get(home_name),
+                    "picked": already_picked(home_name, current_run),
+                },
+            }
+        )
+
+    # Tages-Navigation (+/- 1 Tag)
+    prev_day = current_day - timedelta(days=1)
+    next_day = current_day + timedelta(days=1)
+    prev_day_str = prev_day.isoformat()
+    next_day_str = next_day.isoformat()
+
+    # === Picks laden (für Liste & Kalender) ===
     picks_for_run = get_picks_for_run(current_run)
+
+    # Set von Pick-Daten im aktuellen Lauf
+    pick_dates = set()
+    for p in picks_for_run:
+        try:
+            d = date.fromisoformat(p["date"])
+            pick_dates.add(d)
+        except ValueError:
+            continue
+
+    # Back-to-back: Datum, an dem auch der Vortag ein Pick war
+    b2b_dates = set()
+    for d in pick_dates:
+        if d - timedelta(days=1) in pick_dates:
+            b2b_dates.add(d)
+
+    # === Monatskalender vorbereiten ===
+    cal = calendar.Calendar(firstweekday=0)  # 0 = Montag
+    month_weeks = []
+    for week in cal.monthdatescalendar(current_day.year, current_day.month):
+        week_cells = []
+        for d in week:
+            in_month = (d.month == current_day.month)
+            if not in_month:
+                css_class = "day-other"
+            else:
+                if d in b2b_dates:
+                    css_class = "day-b2b"      # Rot
+                elif d in pick_dates:
+                    css_class = "day-picked"   # Grün
+                elif d >= today:
+                    css_class = "day-future"   # Gelb
+                else:
+                    css_class = "day-empty"    # Grau
+
+            week_cells.append(
+                {
+                    "date": d.isoformat(),
+                    "day": d.day,
+                    "in_month": in_month,
+                    "css_class": css_class,
+                }
+            )
+        month_weeks.append(week_cells)
+
+    # Monatslabel & Navigation
+    month_label = current_day.strftime("%B %Y")  # z.B. "November 2025"
+
+    if current_day.month == 1:
+        prev_month_day = date(current_day.year - 1, 12, 1)
+    else:
+        prev_month_day = date(current_day.year, current_day.month - 1, 1)
+
+    if current_day.month == 12:
+        next_month_day = date(current_day.year + 1, 1, 1)
+    else:
+        next_month_day = date(current_day.year, current_day.month + 1, 1)
+
+    prev_month_str = prev_month_day.isoformat()
+    next_month_str = next_month_day.isoformat()
 
     return render_template(
         "index.html",
@@ -194,6 +253,10 @@ def index():
         prev_day=prev_day_str,
         next_day=next_day_str,
         TEAM_LOGOS=TEAM_LOGOS,
+        month_weeks=month_weeks,
+        month_label=month_label,
+        prev_month_day=prev_month_str,
+        next_month_day=next_month_str,
     )
 
 
