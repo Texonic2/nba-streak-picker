@@ -58,6 +58,40 @@ TEAM_LOGOS = {
     "Washington Wizards": "https://cdn.nba.com/logos/nba/1610612764/global/L/logo.svg",
 }
 
+# Grobe Stärke-Skala (0–100) pro Team – für Smart Picks.
+TEAM_STRENGTH = {
+    "Boston Celtics": 96,
+    "Denver Nuggets": 93,
+    "Oklahoma City Thunder": 92,
+    "Minnesota Timberwolves": 91,
+    "Milwaukee Bucks": 90,
+    "New York Knicks": 89,
+    "Los Angeles Clippers": 88,
+    "Dallas Mavericks": 88,
+    "Phoenix Suns": 87,
+    "Cleveland Cavaliers": 87,
+    "Philadelphia 76ers": 86,
+    "Indiana Pacers": 85,
+    "New Orleans Pelicans": 84,
+    "Sacramento Kings": 84,
+    "Los Angeles Lakers": 83,
+    "Miami Heat": 82,
+    "Orlando Magic": 82,
+    "Golden State Warriors": 81,
+    "Houston Rockets": 80,
+    "Toronto Raptors": 79,
+    "Atlanta Hawks": 78,
+    "Chicago Bulls": 77,
+    "Memphis Grizzlies": 76,
+    "Brooklyn Nets": 76,
+    "San Antonio Spurs": 75,
+    "Utah Jazz": 75,
+    "Portland Trail Blazers": 74,
+    "Charlotte Hornets": 73,
+    "Detroit Pistons": 72,
+    "Washington Wizards": 72,
+}
+
 
 def _get_current_run_from_request(runs):
     run_param = request.args.get("run", type=int)
@@ -74,6 +108,71 @@ def _get_current_day_from_request():
         except ValueError:
             pass
     return date.today()
+
+
+def build_smart_picks(games, used_teams, current_run, current_day_str):
+    """
+    Smart-Pick-Engine:
+    - berücksichtigt nur Teams, die in diesem Lauf noch nicht benutzt sind
+    - bevorzugt Heimteams
+    - bevorzugt Teams, die stärker als der Gegner eingeschätzt werden
+    - gibt sortierte Liste von Vorschlägen zurück (beste zuerst)
+    """
+    suggestions = []
+
+    # Wenn für den Tag schon ein Pick existiert, keine Vorschläge
+    if has_pick_on_date(current_day_str, current_run):
+        return []
+
+    for g in games:
+        visitor = g["visitor"]
+        home = g["home"]
+
+        for side, team in (("visitor", visitor), ("home", home)):
+            if team in used_teams:
+                # Schon benutzt in diesem Lauf → nicht verfügbar
+                continue
+
+            opponent = home if side == "visitor" else visitor
+            is_home = (side == "home")
+
+            team_strength = TEAM_STRENGTH.get(team, 80)
+            opp_strength = TEAM_STRENGTH.get(opponent, 80)
+
+            score = team_strength  # Basis: Stärke
+            reasons = [f"Team-Stärke {team_strength} vs. {opp_strength}"]
+
+            # Heimvorteil
+            if is_home:
+                score += 5
+                reasons.append("Heimspiel")
+
+            diff = team_strength - opp_strength
+            if diff >= 8:
+                score += 4
+                reasons.append("klar stärker als der Gegner")
+            elif diff >= 3:
+                score += 2
+                reasons.append("leicht stärker als der Gegner")
+            elif diff <= -5:
+                reasons.append("eigentlich Underdog")
+
+            suggestions.append(
+                {
+                    "team": team,
+                    "opponent": opponent,
+                    "home": is_home,
+                    "score": score,
+                    "reasons": reasons,
+                    "logo": TEAM_LOGOS.get(team),
+                }
+            )
+
+    # Nach Score sortieren, beste zuerst
+    suggestions.sort(key=lambda s: s["score"], reverse=True)
+
+    # Top 3 reichen
+    return suggestions[:3]
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -145,32 +244,36 @@ def index():
     # === Spiele & Matchup-Karten für aktuellen Tag ===
     games = get_games_for_date(current_day)
 
-    if games:
-        teams_today = sorted(
-            {g["home"] for g in games} | {g["visitor"] for g in games}
-        )
-    else:
-        teams_today = []
-
     game_cards = []
-    for g in games:
-        visitor_name = g["visitor"]
-        home_name = g["home"]
+    if games:
+        for g in games:
+            visitor_name = g["visitor"]
+            home_name = g["home"]
 
-        game_cards.append(
-            {
-                "visitor": {
-                    "name": visitor_name,
-                    "logo": TEAM_LOGOS.get(visitor_name),
-                    "picked": already_picked(visitor_name, current_run),
-                },
-                "home": {
-                    "name": home_name,
-                    "logo": TEAM_LOGOS.get(home_name),
-                    "picked": already_picked(home_name, current_run),
-                },
-            }
-        )
+            game_cards.append(
+                {
+                    "visitor": {
+                        "name": visitor_name,
+                        "logo": TEAM_LOGOS.get(visitor_name),
+                        "picked": already_picked(visitor_name, current_run),
+                    },
+                    "home": {
+                        "name": home_name,
+                        "logo": TEAM_LOGOS.get(home_name),
+                        "picked": already_picked(home_name, current_run),
+                    },
+                }
+            )
+
+    # Picks laden (für Statistik, Kalender, Smart Picks)
+    picks_for_run = get_picks_for_run(current_run)
+
+    # verwendete Teams im aktuellen Lauf
+    used_teams = sorted({p["team"] for p in picks_for_run})
+    used_set = set(used_teams)
+
+    # Smart-Pick-Vorschläge
+    smart_picks = build_smart_picks(games or [], used_set, current_run, current_day_str)
 
     # Tages-Navigation (+/- 1 Tag)
     prev_day = current_day - timedelta(days=1)
@@ -178,10 +281,7 @@ def index():
     prev_day_str = prev_day.isoformat()
     next_day_str = next_day.isoformat()
 
-    # === Picks laden (für Liste & Kalender) ===
-    picks_for_run = get_picks_for_run(current_run)
-
-    # Set von Pick-Daten im aktuellen Lauf
+    # === Kalender & B2B ===
     pick_dates = set()
     for p in picks_for_run:
         try:
@@ -190,30 +290,28 @@ def index():
         except ValueError:
             continue
 
-    # Back-to-back: Datum, an dem auch der Vortag ein Pick war
     b2b_dates = set()
     for d in pick_dates:
         if d - timedelta(days=1) in pick_dates:
             b2b_dates.add(d)
 
-    # === Monatskalender vorbereiten ===
-    cal = calendar.Calendar(firstweekday=0)  # 0 = Montag
+    cal = calendar.Calendar(firstweekday=0)
     month_weeks = []
     for week in cal.monthdatescalendar(current_day.year, current_day.month):
         week_cells = []
         for d in week:
-            in_month = (d.month == current_day.month)
+            in_month = d.month == current_day.month
             if not in_month:
                 css_class = "day-other"
             else:
                 if d in b2b_dates:
-                    css_class = "day-b2b"      # Rot
+                    css_class = "day-b2b"
                 elif d in pick_dates:
-                    css_class = "day-picked"   # Grün
+                    css_class = "day-picked"
                 elif d >= today:
-                    css_class = "day-future"   # Gelb
+                    css_class = "day-future"
                 else:
-                    css_class = "day-empty"    # Grau
+                    css_class = "day-empty"
 
             week_cells.append(
                 {
@@ -225,8 +323,7 @@ def index():
             )
         month_weeks.append(week_cells)
 
-    # Monatslabel & Navigation
-    month_label = current_day.strftime("%B %Y")  # z.B. "November 2025"
+    month_label = current_day.strftime("%B %Y")
 
     if current_day.month == 1:
         prev_month_day = date(current_day.year - 1, 12, 1)
@@ -240,6 +337,28 @@ def index():
 
     prev_month_str = prev_month_day.isoformat()
     next_month_str = next_month_day.isoformat()
+
+    # === Streak-Statistik ===
+    total_picks = len(picks_for_run)
+    total_teams = len(TEAM_LOGOS)
+
+    stats = {
+        "total_picks": total_picks,
+        "used_teams_count": len(used_teams),
+        "total_teams": total_teams,
+    }
+
+    # Status aller Teams
+    team_status = []
+    all_teams_sorted = sorted(TEAM_LOGOS.keys())
+    for t in all_teams_sorted:
+        team_status.append(
+            {
+                "name": t,
+                "logo": TEAM_LOGOS.get(t),
+                "used": t in used_set,
+            }
+        )
 
     return render_template(
         "index.html",
@@ -256,7 +375,10 @@ def index():
         month_weeks=month_weeks,
         month_label=month_label,
         prev_month_day=prev_month_str,
-        next_month_day=next_month_str,
+        next_month_day=next_month_day.isoformat(),
+        stats=stats,
+        team_status=team_status,
+        smart_picks=smart_picks,
     )
 
 

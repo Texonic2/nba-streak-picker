@@ -83,7 +83,7 @@
             font-weight: bold;
         }
 
-        /* Kalender-Styles */
+        /* Kalender */
         .calendar-header {
             display: flex;
             justify-content: space-between;
@@ -119,20 +119,12 @@
             text-decoration: underline;
         }
 
-        .day-picked {
-            background: #14532d; /* Grün: Pick */
-        }
-        .day-b2b {
-            background: #7f1d1d; /* Rot: Back-to-back */
-        }
-        .day-future {
-            background: #78350f; /* Gelb: zukünftiger Tag ohne Pick */
-        }
-        .day-empty {
-            background: #374151; /* Grau: vergangener Tag ohne Pick */
-        }
+        .day-picked { background: #14532d; }
+        .day-b2b { background: #7f1d1d; }
+        .day-future { background: #78350f; }
+        .day-empty { background: #374151; }
         .day-other {
-            background: #111827; /* anderer Monat */
+            background: #111827;
             color: #4b5563;
         }
 
@@ -153,7 +145,7 @@
             margin-right: 4px;
         }
 
-        /* Matchup + Picks */
+        /* Matchups */
         .matchup-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -204,6 +196,29 @@
             font-weight: bold;
             font-size: 16px;
         }
+
+        /* Team-Status */
+        .team-status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .team-status-card {
+            background: #020617;
+            border-radius: 8px;
+            padding: 6px;
+            text-align: center;
+            font-size: 11px;
+        }
+        .team-status-card img {
+            max-width: 40px;
+            max-height: 40px;
+            display: block;
+            margin: 0 auto 4px;
+        }
+        .team-used { background: #7f1d1d; }
+        .team-free { background: #064e3b; }
     </style>
 </head>
 
@@ -211,7 +226,7 @@
     <h1>NBA Streak Picker 🏀</h1>
     <p>Aktueller Spieltag: {{ current_day }}</p>
 
-    <!-- Monatskalender -->
+    <!-- Kalender -->
     <div class="card">
         <div class="calendar-header">
             <h2>Monatsübersicht – {{ month_label }}</h2>
@@ -224,13 +239,7 @@
 
         <table class="calendar">
             <tr>
-                <th>Mo</th>
-                <th>Di</th>
-                <th>Mi</th>
-                <th>Do</th>
-                <th>Fr</th>
-                <th>Sa</th>
-                <th>So</th>
+                <th>Mo</th><th>Di</th><th>Mi</th><th>Do</th><th>Fr</th><th>Sa</th><th>So</th>
             </tr>
             {% for week in month_weeks %}
                 <tr>
@@ -247,10 +256,10 @@
 
         <div class="legend">
             <span><span class="legend-box" style="background:#14532d;"></span>Pick gemacht</span>
-            <span><span class="legend-box" style="background:#7f1d1d;"></span>Back-to-back-Pick (Pick auch am Vortag)</span>
+            <span><span class="legend-box" style="background:#7f1d1d;"></span>Back-to-back-Pick</span>
             <span><span class="legend-box" style="background:#78350f;"></span>Zukünftiger Tag ohne Pick</span>
             <span><span class="legend-box" style="background:#374151;"></span>Vergangener Tag ohne Pick</span>
-            <span><span class="legend-box" style="background:#111827;"></span>Tag aus anderem Monat</span>
+            <span><span class="legend-box" style="background:#111827;"></span>Anderer Monat</span>
         </div>
     </div>
 
@@ -279,6 +288,68 @@
             {% endfor %}
             <span class="lauf-pill"><a href="{{ url_for('new_run', day=current_day) }}">+ Neuer Lauf</a></span>
         </p>
+    </div>
+
+    <!-- Statistik + Smart Picks -->
+    <div class="card">
+        <h2>👑 Lauf {{ current_run }} – Statistik</h2>
+        <p>
+            Insgesamt Picks: <strong>{{ stats.total_picks }}</strong><br>
+            Verwendete Teams: <strong>{{ stats.used_teams_count }}/{{ stats.total_teams }}</strong>
+        </p>
+
+        <h3>Smart-Pick Empfehlungen für {{ current_day }}</h3>
+        {% if smart_picks %}
+            <ul>
+                {% for s in smart_picks %}
+                    <li style="margin-bottom:6px;">
+                        {% if loop.first %}
+                            <strong>Empfehlung:</strong>
+                        {% else %}
+                            Alternative:
+                        {% endif %}
+                        {{ s.team }}
+                        {% if s.home %}
+                            (Heim vs. {{ s.opponent }})
+                        {% else %}
+                            (Auswärts bei {{ s.opponent }})
+                        {% endif %}
+                        – Score: {{ s.score }}<br>
+                        <span style="font-size:12px; color:#9ca3af;">
+                            Gründe:
+                            {{ ", ".join(s.reasons) }}
+                        </span>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p style="font-size: 12px; color: #9ca3af;">
+                Keine Smart-Pick-Empfehlung verfügbar
+                (entweder keine Spiele, alle Teams von heute im Lauf schon verwendet
+                oder du hast bereits einen Pick für heute gesetzt).
+            </p>
+        {% endif %}
+
+        <h3>Teams in diesem Lauf</h3>
+        <p style="font-size: 12px; color: #9ca3af;">
+            Rot = bereits verwendet (nicht mehr verfügbar), Grün = noch frei.
+        </p>
+
+        <div class="team-status-grid">
+            {% for t in team_status %}
+                <div class="team-status-card {% if t.used %}team-used{% else %}team-free{% endif %}">
+                    {% if t.logo %}
+                        <img src="{{ t.logo }}" alt="{{ t.name }} Logo">
+                    {% endif %}
+                    <div>{{ t.name }}</div>
+                    {% if t.used %}
+                        <div>❌ Verwendet</div>
+                    {% else %}
+                        <div>✅ Frei</div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
     </div>
 
     <!-- Matchups + Picks -->
